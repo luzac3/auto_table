@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/poi-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/poi-examples-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/poi-excelant-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/poi-ooxml-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/poi-ooxml-schemas-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/poi-scratchpad-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/poi-bin-3.17-20170915/poi-3.17/ooxml-lib/xmlbeans-2.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-examples-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-excelant-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-ooxml-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-ooxml-schemas-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-scratchpad-3.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
