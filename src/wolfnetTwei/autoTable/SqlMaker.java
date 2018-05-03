@@ -21,12 +21,6 @@ public class SqlMaker {
 
             pw = new PrintWriter(fw);
 
-            pw.println("書き込み処理1");
-            pw.println("書き込み処理2");
-
-            // マップを受け取って展開し、Update文にあわせて文字列を生成
-            StringBuilder sql = null;
-
             StringBuilder key = null;
             StringBuilder unique = null;
             StringBuilder index = null;
@@ -41,8 +35,6 @@ public class SqlMaker {
             for (Map.Entry<String,Map<String,Object>> clmnMap : map.entrySet()){
                 tblName = clmnMap.getKey();
                 clmnMapInner = clmnMap.getValue();
-
-                sql = new StringBuilder();
 
                 // 同一名テーブルの削除文
                 pw.println("DROP TABLE IF EXISTS ");
@@ -103,36 +95,42 @@ public class SqlMaker {
                     pw.println(")");
                     pw.println(" ");
 
+                    // nullを許容するか
                     if(clmnProperty.getNullFlg()){
                         pw.println("NULL ");
                     }else{
                         pw.println("NOT NULL ");
                     }
 
+                    // default値が存在するか
                     if(!clmnProperty.getDefaultVal().isEmpty()){
                         pw.println("DEFAULT ");
                         pw.println(clmnProperty.getDefaultVal());
                         pw.println(" ");
                     }
 
+                    // オートインクリメント
                     if(clmnProperty.getIncrementFlg()){
                         pw.println("AUTO_INCREMENT ");
                     }
 
+                    // コメント
                     pw.println("COMMENT ");
                     pw.println(clmnProperty.getComment());
 
                     // key unique index情報を入力する。先に作っておかないとダメっぽい。
+                    // keyの長さが"()"より大きければ存在
                     if(key.length() > 2){
-                       key.setLength(key.length() -1);
-                       pw.println(key);
+                        // 末尾の二つ前の","を削除
+                        key.setLength(key.length() -2);
+                        pw.println(key);
                     }
                     if(unique.length() > 2){
-                        unique.setLength(unique.length() -1);
+                        unique.setLength(unique.length() -2);
                         pw.println(unique);
                     }
                     if(index.length() > 2){
-                        index.setLength(index.length() -1);
+                        index.setLength(index.length() -2);
                         pw.println(index);
                     }
                 }
