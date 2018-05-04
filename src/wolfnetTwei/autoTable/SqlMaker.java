@@ -75,10 +75,16 @@ public class SqlMaker {
                 pw.println(tblName);
                 pw.println("(");
 
+                boolean firstRowFlg = true;
                 for (Map.Entry<String,Object> flg: clmnMapInner.entrySet()){
                     clmnName = flg.getKey();
                     clmnProperty = (ClmnProperty) flg.getValue();
 
+                    if(firstRowFlg){
+                        firstRowFlg = false;
+                    }else{
+                        pw.print(",");
+                    }
                     // カラム名
                     pw.println(clmnName);
 
@@ -86,10 +92,13 @@ public class SqlMaker {
                     pw.print(clmnProperty.getType());
                     pw.print(" ");
 
-                    // 長さ
-                    pw.print("(");
-                    pw.print(clmnProperty.getLength());
-                    pw.println(")");
+                    // DATE型はLengthを設定しない
+                    if(!clmnProperty.getType().equals("DATE")){
+                        // 長さ
+                        pw.print("(");
+                        pw.print(clmnProperty.getLength());
+                        pw.println(")");
+                    }
 
                     // nullを許容するか
                     if(clmnProperty.getNullFlg()){
@@ -115,14 +124,16 @@ public class SqlMaker {
                     pw.print("'");
                     pw.print(clmnProperty.getComment());
                     pw.println("'");
+
+                    //改行
                     pw.print("\r\n");
                 }
                 // メモリを解放する
                 clmnProperty = null;
 
-
                 // keyの長さが"("より大きければ存在
                 if(key.length() > 1){
+                    pw.print(",");
                     // 末尾の","を削除
                     key.setLength(key.length() -1);
                     // ()を閉じる
@@ -131,12 +142,14 @@ public class SqlMaker {
                     pw.println(key);
                 }
                 if(unique.length() > 1){
+                    pw.print(",");
                     unique.setLength(unique.length() -1);
                     unique.append(")");
                     pw.print("UNIQUE ");
                     pw.println(unique);
                 }
                 if(index.length() > 1){
+                    pw.print(",");
                     index.setLength(index.length() -1);
                     index.append(")");
                     pw.print("INDEX ");
