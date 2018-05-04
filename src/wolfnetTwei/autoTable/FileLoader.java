@@ -95,7 +95,6 @@ public class FileLoader {
                 // 全行を繰り返し処理
                 Iterator<Row> rows = sheet.rowIterator();
                 while(rows.hasNext()) {
-                    System.out.println(rows.hasNext());
                 	// rowオブジェクトを取得
                     Row row = rows.next();
 
@@ -121,7 +120,6 @@ public class FileLoader {
                                 break;
                             }
                             cellVal.append(",");
-                            System.out.println(cellVal);
                         }catch(IllegalStateException e){
                             throw e;
                         }catch(Exception e){
@@ -132,7 +130,6 @@ public class FileLoader {
                         // 最後のカンマの削除
                         cellVal.setLength(cellVal.length() - 1);
                     }
-                    System.out.println(cellVal);
 
                     lineLst.add(cellVal.toString());
 
