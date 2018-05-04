@@ -2,6 +2,7 @@ package wolfnetTwei.autoTable;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 class AutoTable{
@@ -9,7 +10,7 @@ class AutoTable{
         String fileLstPath = "";
         String filePath = "";
 
-        Map<String, Map<String,Object>> tblMap = new HashMap<>();
+        Map<String, List<Object>> tblMap = new HashMap<>();
 
         if(args.length != 0){
             fileLstPath = args[0];
