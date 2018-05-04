@@ -3,13 +3,14 @@ package wolfnetTwei.autoTable;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class SqlMaker {
     boolean overWriteFlg = false;
 
-    void makeStr(Map<String,Map<String,Object>> map){
+    void makeStr(Map<String,List<Object>> map){
         FileWriter fw = null;
         PrintWriter pw = null;
         try {
@@ -29,13 +30,13 @@ public class SqlMaker {
             String tblName = "";
             String clmnName = "";
 
-            Map<String,Object> clmnMapInner = new HashMap<>();
+            List<Object> clmnLstInner = new ArrayList<>();
 
             ClmnProperty clmnProperty;
 
-            for (Map.Entry<String,Map<String,Object>> clmnMap : map.entrySet()){
+            for (Map.Entry<String,List<Object>> clmnMap : map.entrySet()){
                 tblName = clmnMap.getKey();
-                clmnMapInner = clmnMap.getValue();
+                clmnLstInner = clmnMap.getValue();
 
                 // 同一名テーブルの削除文
                 pw.print("DROP TABLE IF EXISTS ");
@@ -51,9 +52,10 @@ public class SqlMaker {
                 // foreign.append("(");
                 index.append("(");
 
-                for (Map.Entry<String,Object> flg: clmnMapInner.entrySet()){
-                    clmnName = flg.getKey();
-                    clmnProperty = (ClmnProperty) flg.getValue();
+                for (Object flg: clmnLstInner){
+                    clmnProperty = (ClmnProperty) flg;
+
+                    clmnName = clmnProperty.getClmnName();
 
                     // else if とcontinueどっちがいいですかね？
                     if(clmnProperty.getPrimaryFlg()){
@@ -76,9 +78,10 @@ public class SqlMaker {
                 pw.println("(");
 
                 boolean firstRowFlg = true;
-                for (Map.Entry<String,Object> flg: clmnMapInner.entrySet()){
-                    clmnName = flg.getKey();
-                    clmnProperty = (ClmnProperty) flg.getValue();
+                for (Object flg: clmnLstInner){
+                    clmnProperty = (ClmnProperty) flg;
+
+                    clmnName = clmnProperty.getClmnName();
 
                     if(firstRowFlg){
                         firstRowFlg = false;

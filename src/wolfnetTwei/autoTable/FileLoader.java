@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,10 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class FileLoader {
     String line = "";
-    List<String> clmnLst = new ArrayList<>();
+    List<String> lineLst = new ArrayList<>();
 
     @SuppressWarnings("deprecation")
-	Map<String,Map<String,Object>> fileLoad(String filePath, Map<String,Map<String,Object>> tblMap) throws Exception{
+	Map<String,List<Object>> fileLoad(String filePath, Map<String,List<Object>> tblMap) throws Exception{
         // 宣言してNULLを設定
         ClmnProperty clmnProperty = null;
 
@@ -51,7 +50,7 @@ public class FileLoader {
                     line = new String(b, "UTF-8");
 
                     System.out.println(line);
-                    clmnLst.add(line);
+                    lineLst.add(line);
                 }
                 br.close();
             }else if(extention.equals("xls") || extention.equals("xlsx")){
@@ -102,7 +101,7 @@ public class FileLoader {
                     }
                     System.out.println(cellVal);
 
-                    clmnLst.add(cellVal.toString());
+                    lineLst.add(cellVal.toString());
 
                 }
             }else{
@@ -115,20 +114,23 @@ public class FileLoader {
 
         }
 
-        String[] tblNameLine = clmnLst.get(1).split(",",-1);
+        String[] tblNameLine = lineLst.get(1).split(",",-1);
         String tblName = tblNameLine[1];
 
         // 末尾を削除する
-        clmnLst.remove(clmnLst.size() -1 );
+        lineLst.remove(lineLst.size() -1 );
         // 内容以外の部分を削除
         for(int i = 5; i >= 0; i-- ){
-            clmnLst.remove(i);
+        	lineLst.remove(i);
         }
 
-        // カラム名をキーとした、プロパティごとのマップ
-        Map <String,Object> clmnMap = new HashMap<>();
+        // 取得順のリスト
+        List<Object> clmnLst = new ArrayList<>();
 
-        for (String row : clmnLst){
+        // カラム名をキーとした、プロパティごとのマップ
+        // Map <String,Object> clmnMap = new HashMap<>();
+
+        for (String row : lineLst){
             clmnProperty = new ClmnProperty();
             String[] itemArr = row.split(",",-1);
 
@@ -149,10 +151,10 @@ public class FileLoader {
             clmnProperty.setIncrementFlg(flgChange(itemArr[9]));
             clmnProperty.setDefaultVal(itemArr[10]);
 
-            clmnMap.put(clmnProperty.getClmnName(),clmnProperty);
+            clmnLst.add(clmnProperty);
             clmnProperty = null;
         };
-        tblMap.put(tblName,clmnMap);
+        tblMap.put(tblName,clmnLst);
 
         return tblMap;
     }
