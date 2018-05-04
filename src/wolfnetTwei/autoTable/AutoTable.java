@@ -1,3 +1,16 @@
+/**
+ *
+ * CreateTable文自動生成メインクラス<br>
+ *
+ * <package name="wolfnetTwei.autoTable" />
+ *
+ * @version 1.0
+ * @since  2018/05/04
+ * @author takuto.osugi
+ *
+ * Copyright (c) DC2I<br>
+ *
+ */
 package wolfnetTwei.autoTable;
 
 import java.io.File;
@@ -5,6 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * 引数で取得したディレクトリのCSVファイル一覧を取得<br>
+ * ファイル(テーブル)ごとにリストを作成する関数を呼び出す<br>
+ * 取得したマップをファイルSQLファイルを生成する関数に渡す<br>
+ *
+ * @since  2018/05/04
+ * @author takuto.osugi
+ *
+ */
 class AutoTable{
     public static void main(String args[]){
         String fileLstPath = "";
@@ -48,9 +71,9 @@ class AutoTable{
         	throw new RuntimeException("引数がありません");
         }
 
-        // 作成したマップから文字列を作成し、ファイル生成を呼び出す
         SqlMaker sqlMaker = new SqlMaker();
 
+        // 作成したマップを受け取り、ファイル生成する関数の呼び出し
         sqlMaker.makeStr(tblMap);
     }
 }

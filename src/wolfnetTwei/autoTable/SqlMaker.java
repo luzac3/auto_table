@@ -1,3 +1,16 @@
+/**
+ *
+ * SQL文(CreateTable文)を生成するクラス<br>
+ *
+ * <package name="wolfnetTwei.autoTable" />
+ *
+ * @version 1.0
+ * @since  2018/05/04
+ * @author takuto.osugi
+ *
+ * Copyright (c) DC2I<br>
+ *
+ */
 package wolfnetTwei.autoTable;
 
 import java.io.FileWriter;
@@ -7,7 +20,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * 取得したマップを展開し、テーブル数分ループする<br>
+ * テーブル名ごとのカラムリストからプロパティを取得し、<br>
+ * SQL文として並べ替えてファイルに出力する<br>
+ *
+ * @since  2018/05/04
+ * @author takuto.osugi
+ *
+ */
 public class SqlMaker {
+
+    /**
+     *
+     * 取得したマップを展開し、テーブル数分ループする<br>
+     * テーブル名ごとのカラムリストからプロパティを取得し、<br>
+     * SQL文として並べ替えてファイルに出力する<br>
+     *
+     *  @param Map テーブルごとのカラムリスト/プロパティ
+     *  @return なし
+     *
+     */
     void makeStr(Map<String,List<Object>> map){
         FileWriter fw = null;
         PrintWriter pw = null;
@@ -163,7 +197,7 @@ public class SqlMaker {
             throw new RuntimeException(e);
         } finally {
             if(pw != null) {
-            	pw.close();
+                pw.close();
             }
             if(fw != null) {
                 try {

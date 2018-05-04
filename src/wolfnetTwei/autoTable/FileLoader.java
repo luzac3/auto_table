@@ -1,3 +1,16 @@
+/**
+ *
+ * ファイルリストからファイルの内容を取得するクラス<br>
+ *
+ * <package name="wolfnetTwei.autoTable" />
+ *
+ * @version 1.0
+ * @since  2018/05/04
+ * @author takuto.osugi
+ *
+ * Copyright (c) DC2I<br>
+ *
+ */
 package wolfnetTwei.autoTable;
 
 import java.io.BufferedReader;
@@ -17,10 +30,30 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+/**
+ *
+ * ファイル(ファイルパス)とテーブルごとのマップを取得<br>
+ * 取得したファイルのテーブル名をキーとした、テーブルカラムごとのプロパティをマップに登録して返す<br>
+ *
+ * @since  2018/05/04
+ * @author takuto.osugi
+ *
+ */
 public class FileLoader {
     String line = "";
     List<String> lineLst = new ArrayList<>();
 
+    /**
+     *
+     * ファイル(ファイルパス)とテーブルごとのマップを取得<br>
+     * 取得したファイルのテーブル名をキーとした、テーブルカラムごとのプロパティをマップに登録して返す<br>
+     *
+     *  @param filePath 内容を取得するファイルのファイルパス
+     *  @param tblMap テーブル名をキーとした、テーブルごとのカラムリスト
+     *  @return tblMap 取得したファイルの内容を追加したマップ
+     *  @Exception
+     *
+     */
     @SuppressWarnings("deprecation")
 	Map<String,List<Object>> fileLoad(String filePath, Map<String,List<Object>> tblMap) throws Exception{
         // 宣言してNULLを設定
@@ -159,6 +192,14 @@ public class FileLoader {
         return tblMap;
     }
 
+    /**
+     *
+     * ファイルから取得したPKなどの「○(有)」をフラグに変換する<br>
+     *
+     *  @param item PKなどのプロパティ("○"か"")
+     *  @return flg 取得したプロパティが○ならtrue,なしならfalse
+     *
+     */
     private boolean flgChange(String item){
         boolean flg = false;
         if(item.equals("○")){
