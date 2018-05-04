@@ -35,8 +35,12 @@ class AutoTable{
 
                 FileLoader fileLoader = new FileLoader();
 
-                // ファイルパスからファイルをオープン、中身のカラムリストを取得
-                tblMap = fileLoader.fileLoad(filePath,tblMap);
+                try{
+                    // ファイルパスからファイルをオープン、中身のカラムリストを取得
+                    tblMap = fileLoader.fileLoad(filePath,tblMap);
+                }catch(Exception e){
+                    throw new RuntimeException(e);
+                }
             }
         }else{
             // 引数が取れてないのでエラー

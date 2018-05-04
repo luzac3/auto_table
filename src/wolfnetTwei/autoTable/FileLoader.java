@@ -7,34 +7,106 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class FileLoader {
     String line = "";
     List<String> clmnLst = new ArrayList<>();
 
-    Map<String,Map<String,Object>> fileLoad(String filePath, Map<String,Map<String,Object>> tblMap){
+    @SuppressWarnings("deprecation")
+	Map<String,Map<String,Object>> fileLoad(String filePath, Map<String,Map<String,Object>> tblMap) throws Exception{
         // 宣言してNULLを設定
         ClmnProperty clmnProperty = null;
 
         try{
-            File csv = new File(filePath);
-            FileInputStream input = new FileInputStream(csv);
-            InputStreamReader stream = new InputStreamReader(input,"SJIS");
-            BufferedReader br = new BufferedReader(stream);
+            File file = new File(filePath);
+            FileInputStream input = new FileInputStream(file);
 
-            while ((line = br.readLine()) != null){
-                // バイトで取得
-                byte[] b = line.getBytes();
+            // ドットの位置を後ろから検索
+            int pos = filePath.lastIndexOf(".");
 
-                // 取得した文字列をUTF-8に変換
-                line = new String(b, "UTF-8");
+            // インデックス位置をドット直後に設定
+            pos++;
 
-                System.out.println(line);
-                clmnLst.add(line);
+            // 拡張子を取得
+            String extention = filePath.substring(pos);
+
+            if(extention.equals("csv")){
+                InputStreamReader stream = new InputStreamReader(input,"SJIS");
+                BufferedReader br = new BufferedReader(stream);
+                while ((line = br.readLine()) != null){
+                    // バイトで取得
+                    byte[] b = line.getBytes();
+
+                    // 取得した文字列をUTF-8に変換
+                    line = new String(b, "UTF-8");
+
+                    System.out.println(line);
+                    clmnLst.add(line);
+                }
+                br.close();
+            }else if(extention.equals("xls") || extention.equals("xlsx")){
+                Workbook workbook = WorkbookFactory.create(input);
+
+                // シート番号取得
+                Sheet sheet = workbook.getSheetAt(0);
+
+                // 全行を繰り返し処理
+                Iterator<Row> rows = sheet.rowIterator();
+                while(rows.hasNext()) {
+                    System.out.println(rows.hasNext());
+                	// rowオブジェクトを取得
+                    Row row = rows.next();
+
+                    // セルの値を保存するオブジェクトを生成
+                    StringBuilder cellVal = new StringBuilder();
+
+                    //全セルを繰り返し処理
+                    Iterator<Cell> cells = row.cellIterator();
+                    while(cells.hasNext()){
+                        // cellオブジェクトを取得
+                        Cell cell = cells.next();
+                        try{
+                            switch(cell.getCellType()) {
+                              case Cell.CELL_TYPE_STRING:
+                                cellVal.append(cell.getStringCellValue());
+                                break;
+                              case Cell.CELL_TYPE_NUMERIC:
+                                if(DateUtil.isCellDateFormatted(cell)) {
+                                    cellVal.append(cell.getDateCellValue());
+                                } else {
+                                    cellVal.append(cell.getNumericCellValue());
+                                }
+                                break;
+                            }
+                            cellVal.append(",");
+                            System.out.println(cellVal);
+                        }catch(IllegalStateException e){
+                            throw e;
+                        }
+                    }
+                    if(cellVal.length() > 0){
+                        // 最後のカンマの削除
+                        cellVal.setLength(cellVal.length() - 1);
+                    }
+                    System.out.println(cellVal);
+
+                    clmnLst.add(cellVal.toString());
+
+                }
+            }else{
+            	input.close();
+                throw new RuntimeException("ファイルの拡張子が異常です");
             }
-            br.close();
         }catch(IOException e){
 
         }catch(Exception e){
@@ -85,7 +157,7 @@ public class FileLoader {
 
     private boolean flgChange(String item){
         boolean flg = false;
-        if(item == "○"){
+        if(item.equals("○")){
             flg = true;
         }else if(item == ""){
         	flg = false;
