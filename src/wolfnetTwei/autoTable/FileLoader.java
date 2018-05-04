@@ -78,13 +78,13 @@ public class FileLoader {
                         try{
                             switch(cell.getCellType()) {
                               case Cell.CELL_TYPE_STRING:
-                                cellVal.append(cell.getStringCellValue());
+                                cellVal.append(cell.getStringCellValue().trim());
                                 break;
                               case Cell.CELL_TYPE_NUMERIC:
                                 if(DateUtil.isCellDateFormatted(cell)) {
                                     cellVal.append(cell.getDateCellValue());
                                 } else {
-                                    cellVal.append(cell.getNumericCellValue());
+                                    cellVal.append((int) cell.getNumericCellValue());
                                 }
                                 break;
                             }
@@ -92,6 +92,8 @@ public class FileLoader {
                             System.out.println(cellVal);
                         }catch(IllegalStateException e){
                             throw e;
+                        }catch(Exception e){
+                        	throw e;
                         }
                     }
                     if(cellVal.length() > 0){
@@ -113,13 +115,13 @@ public class FileLoader {
 
         }
 
-        String[] tblNameLine = clmnLst.get(1).split(",",0);
+        String[] tblNameLine = clmnLst.get(1).split(",",-1);
         String tblName = tblNameLine[1];
 
         // 末尾を削除する
         clmnLst.remove(clmnLst.size() -1 );
         // 内容以外の部分を削除
-        for(int i = 6; i > 0; i-- ){
+        for(int i = 5; i >= 0; i-- ){
             clmnLst.remove(i);
         }
 
@@ -128,7 +130,7 @@ public class FileLoader {
 
         for (String row : clmnLst){
             clmnProperty = new ClmnProperty();
-            String[] itemArr = row.split(",",0);
+            String[] itemArr = row.split(",",-1);
 
             clmnProperty.setComment(itemArr[0]);
             clmnProperty.setClmnName(itemArr[1]);
@@ -141,8 +143,8 @@ public class FileLoader {
             }
             clmnProperty.setPrimaryFlg(flgChange(itemArr[5]));
             clmnProperty.setUniqueFlg(flgChange(itemArr[7]));
-            clmnProperty.setIndexFlg(flgChange(itemArr[13]));
-            clmnProperty.setForignFlg(flgChange(itemArr[8]));
+            clmnProperty.setIndexFlg(flgChange(itemArr[12]));
+            // clmnProperty.setForignFlg(flgChange(itemArr[8]));
             clmnProperty.setNullFlg(flgChange(itemArr[6]));
             clmnProperty.setIncrementFlg(flgChange(itemArr[9]));
             clmnProperty.setDefaultVal(itemArr[10]);
