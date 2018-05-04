@@ -8,17 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 public class SqlMaker {
-    boolean overWriteFlg = false;
-
     void makeStr(Map<String,List<Object>> map){
         FileWriter fw = null;
         PrintWriter pw = null;
         try {
             String path = "C:\\Users\\user\\git\\auto_table\\src\\wolfnetTwei\\autoTable\\updater.sql";
-            // 一度目は上書き処理
-            fw = new FileWriter(path, overWriteFlg);
-            // 二度目以降は追記
-            overWriteFlg = true;
+            // 常に上書き処理
+            fw = new FileWriter(path, false);
 
             pw = new PrintWriter(fw);
 
