@@ -23,6 +23,7 @@ public class SqlMaker {
 
             StringBuilder key = null;
             StringBuilder unique = null;
+            // StringBuilder foreign = null;
             StringBuilder index = null;
 
             String tblName = "";
@@ -37,10 +38,9 @@ public class SqlMaker {
                 clmnMapInner = clmnMap.getValue();
 
                 // 同一名テーブルの削除文
-                pw.println("DROP TABLE IF EXISTS ");
+                pw.print("DROP TABLE IF EXISTS ");
                 pw.println(tblName);
                 pw.println(";");
-                pw.println("\n");
 
                 key = new StringBuilder();
                 unique = new StringBuilder();
@@ -48,6 +48,7 @@ public class SqlMaker {
 
                 key.append("(");
                 unique.append("(");
+                // foreign.append("(");
                 index.append("(");
 
                 for (Map.Entry<String,Object> flg: clmnMapInner.entrySet()){
@@ -70,11 +71,7 @@ public class SqlMaker {
                         index.append(",");
                     }
                 }
-                key.append(")");
-                unique.append(")");
-                index.append(")");
-
-                pw.println("CREATE TABLE IF NOT EXISTS ");
+                pw.print("CREATE TABLE IF NOT EXISTS ");
                 pw.println(tblName);
                 pw.println("(");
 
@@ -84,16 +81,15 @@ public class SqlMaker {
 
                     // カラム名
                     pw.println(clmnName);
-                    pw.println(" ");
 
                     // 型
-                    pw.println(clmnProperty.getType());
+                    pw.print(clmnProperty.getType());
+                    pw.print(" ");
 
                     // 長さ
-                    pw.println("(");
-                    pw.println(clmnProperty.getLength());
+                    pw.print("(");
+                    pw.print(clmnProperty.getLength());
                     pw.println(")");
-                    pw.println(" ");
 
                     // nullを許容するか
                     if(clmnProperty.getNullFlg()){
@@ -115,26 +111,38 @@ public class SqlMaker {
                     }
 
                     // コメント
-                    pw.println("COMMENT ");
-                    pw.println(clmnProperty.getComment());
-
-                    // key unique index情報を入力する。先に作っておかないとダメっぽい。
-                    // keyの長さが"()"より大きければ存在
-                    if(key.length() > 2){
-                        // 末尾の二つ前の","を削除
-                        key.setLength(key.length() -2);
-                        pw.println(key);
-                    }
-                    if(unique.length() > 2){
-                        unique.setLength(unique.length() -2);
-                        pw.println(unique);
-                    }
-                    if(index.length() > 2){
-                        index.setLength(index.length() -2);
-                        pw.println(index);
-                    }
+                    pw.print("COMMENT ");
+                    pw.print("'");
+                    pw.print(clmnProperty.getComment());
+                    pw.println("'");
+                    pw.print("\r\n");
                 }
+                // メモリを解放する
                 clmnProperty = null;
+
+
+                // keyの長さが"("より大きければ存在
+                if(key.length() > 1){
+                    // 末尾の","を削除
+                    key.setLength(key.length() -1);
+                    // ()を閉じる
+                    key.append(")");
+                    pw.print("PRIMARY KEY ");
+                    pw.println(key);
+                }
+                if(unique.length() > 1){
+                    unique.setLength(unique.length() -1);
+                    unique.append(")");
+                    pw.print("UNIQUE ");
+                    pw.println(unique);
+                }
+                if(index.length() > 1){
+                    index.setLength(index.length() -1);
+                    index.append(")");
+                    pw.print("INDEX ");
+                    pw.println(index);
+                }
+                pw.println(")");
                 pw.println(";");
             }
             // 文字列の出力
