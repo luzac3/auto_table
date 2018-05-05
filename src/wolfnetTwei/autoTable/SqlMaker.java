@@ -125,8 +125,8 @@ public class SqlMaker {
                     pw.print(clmnProperty.getType());
                     pw.print(" ");
 
-                    // DATE型はLengthを設定しない
-                    if(!clmnProperty.getType().equals("DATE")){
+                    // Lengthがない場合はスキップ
+                    if(clmnProperty.getLength() != 0){
                         // 長さ
                         pw.print("(");
                         pw.print(clmnProperty.getLength());

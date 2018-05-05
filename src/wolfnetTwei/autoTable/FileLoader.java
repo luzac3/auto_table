@@ -171,7 +171,7 @@ public class FileLoader {
                 // 数字に変換できたらその数字を、できなければ11を設定
                 clmnProperty.setLength(Integer.parseInt(itemArr[3]));
             } catch (NumberFormatException e) {
-                clmnProperty.setLength(11);
+                clmnProperty.setLength(0);
             }
             clmnProperty.setPrimaryFlg(flgChange(itemArr[5]));
             clmnProperty.setUniqueFlg(flgChange(itemArr[7]));
