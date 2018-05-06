@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-examples-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-excelant-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-ooxml-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-ooxml-schemas-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/poi-scratchpad-3.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/git/auto_table/apache-poi/xmlbeans-2.6.0.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/poi-3.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/poi-examples-3.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/poi-excelant-3.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/poi-ooxml-3.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/poi-ooxml-schemas-3.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/poi-scratchpad-3.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/pleiades/xampp/htdocs/auto_table/apache-poi/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

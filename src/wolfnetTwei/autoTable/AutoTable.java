@@ -14,6 +14,7 @@
 package wolfnetTwei.autoTable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,8 +63,13 @@ class AutoTable{
                 try{
                     // ファイルパスからファイルをオープン、中身のカラムリストを取得
                     tblMap = fileLoader.fileLoad(filePath,tblMap);
-                }catch(Exception e){
+                }catch(ExtentionException e){
+                    // この例外の場合は該当ファイルをスキップ
+                    continue;
+                }catch(IOException e){
                     throw new RuntimeException(e);
+                }catch(Exception e){
+                	throw new RuntimeException("未知のエラーです");
                 }
             }
         }else{

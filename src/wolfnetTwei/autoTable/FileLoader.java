@@ -135,14 +135,13 @@ public class FileLoader {
 
                 }
             }else{
-            	input.close();
-                throw new RuntimeException("ファイルの拡張子が異常です");
+                input.close();
+                throw new ExtentionException();
             }
         }catch(IOException e){
-
-        }catch(Exception e){
-
+            throw e;
         }
+
 
         String[] tblNameLine = lineLst.get(1).split(",",-1);
         String tblName = tblNameLine[1];
