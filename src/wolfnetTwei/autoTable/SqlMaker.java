@@ -47,7 +47,7 @@ public class SqlMaker {
         PrintWriter pw = null;
         try {
             String path = ""
-            		+ "updater.sql";
+            		+ "src\\wolfnetTwei\\autoTable\\updater.sql";
             // 常に上書き処理
             fw = new FileWriter(path, false);
 
