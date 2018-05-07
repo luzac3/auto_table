@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================
+     2018/05/07 20:26:25
+
+     project
+     description
+
+     Luza
+     ====================================================================== -->
+<project name="createTable" default="clean" basedir=".">
+    <description>
+            description
+    </description>
+    <!-- ベースディレクトリ -->
+    <dirname property="base" file="${ant.file}"/>
+
+    <!-- jarファイル名 -->
+    <property name = "jarname" value="autoTable" />
+
+    <!-- ZIPファイル名 -->
+    <property name="zipname" value="autoTable" />
+
+    <!-- ビルド成果物ディレクトリ -->
+    <property name="dir.target" value="target" />
+    <property name="dir.target.classes" value="${dir.target}/classes" />
+    <property name="dir.target.resource" value="${dir.target}/resource" />
+    <property name="dir.target.dependency" value="${dir.target}/dependency" />
+    <property name="dir.target.file" value="${dir.target}/file" />
+    <property name="dir.target.log" value="${dir.target}/log" />
+
+    <!-- srcディレクトリ -->
+    <property name="dir.src" value="src" />
+
+    <!-- リソースファイルディレクトリ -->
+    <property name="dir.resource" value="resource" />
+
+    <!-- libディレクトリ -->
+    <property name="dir.lib" value="lib" />
+
+    <!-- CSV等のファイル置き場 -->
+    <property name="dir.file" value="file" />
+
+    <!-- logファイル置き場 -->
+    <property name="dir.log" value="log" />
+
+    <!-- ソースファイルエンコード -->
+    <property name="src.enc" value="UTF-8" />
+
+    <!--
+        クラスパスの設定。
+        必要ライブラリの配置してあるパスをクラスパスに通す。
+    -->
+    <path id="build.lib">
+        <fileset dir="${dir.lib}" >
+            <include name="*" />
+        </fileset>
+    </path>
+
+<pathconvert pathsep=" " dirsep="/" property="jar.runtime.classpath">
+  <path>
+    <pathelement location="${build.dir}" />
+  </path>
+  <map from="${build.dir}" to="."/>
+</pathconvert>
+<!--
+<target name="jarpath" if="have.library">
+-->
+<target name="jarpath">
+  <path id="jar.path">
+    <pathelement location="${build.dir}" />
+    <fileset dir="${dir.lib}">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+  <!-- lib.dirは相対パスで指定しているので、これを絶対パスに変換 -->
+  <!-- これは、あとでmapを使ってjar.pathから絶対パスを削るため -->
+
+  <pathconvert property="lib.path">
+    <path path="${dir.lib}" />
+  </pathconvert>
+
+  <echo message="-------------------------- ${dir.lib}" />
+  <pathconvert pathsep=" " dirsep="/" property="jar.runtime.classpath" refid="jar.path">
+    <map from="${lib.path}"  to="."/>
+    <map from="${build.dir}" to="."/>
+  </pathconvert>
+  <echo message="-------------------------- ${jar.runtime.classpath}" />
+</target>
+
+    <!-- =================================
+          target: clean
+         ================================= -->
+    <!-- JARファイル作成 -->
+    <target name="makeJar" description="JARファイル作成">
+        <!-- 作業用ディレクトリのcleanup -->
+        <antcall target="clean"/>
+        <antcall target="jarpath"/>
+        <antcall target="compile"/>
+        <echo message="JARファイル作成" />
+
+        <jar basedir="${dir.target.classes}" destfile="${base}/${dir.target}/${jarname}.jar">
+
+            <manifest>
+                <attribute name="Main-Class" value="wolfnetTwei.autoTable.AutoTable"/>
+                <attribute name="Class-Path" value="${jar.runtime.classpath}" />
+            </manifest>
+        </jar>
+        <antcall target="filecopy">
+            <param name="dir.env" value="${dir.resource}" />
+        </antcall>
+    </target>
+
+    <!-- クラスファイル以外の必要なファイルのコピー -->
+    <target name="filecopy" description="クラスファイル以外の必要なファイルのコピー">
+        <echo message="クラスファイル以外の必要なファイルをコピー" />
+
+        <!-- 古いファイルを削除 -->
+        <delete file="${dir.target.resource}/*" />
+        <delete file="${dir.target.dependency}/*" />
+        <delete file="${dir.target.file}/*" />
+        <delete file="${dir.target.log}/*" />
+
+        <!-- 新しいフォルダを作成 -->
+        <mkdir dir="${dir.target.resource}" />
+        <mkdir dir="${dir.target.dependency}" />
+        <mkdir dir="${dir.target.file}" />
+        <mkdir dir="${dir.target.log}" />
+
+        <!-- resourceファイルをコピー -->
+        <copy todir="${dir.target.resource}">
+            <fileset dir="${dir.env}">
+                <include name="*" />
+            </fileset>
+        </copy>
+
+        <!-- 依存性のあるファイルをコピー -->
+        <copy todir="${dir.target.dependency}">
+            <fileset dir="${dir.lib}">
+                <include name="*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- コンパイル -->
+    <target name="compile" description="コンパイル">
+        <echo message="コンパイル開始" />
+        <mkdir dir="${dir.target.classes}"/>
+        <javac classpathref="build.lib"
+            srcdir="${dir.src}"
+            destdir="${dir.target.classes}"
+            encoding="${src.enc}"
+            source="1.8"
+            target="1.8"
+            includeAntRuntime="false"
+            debug="true"/>
+    </target>
+
+    <!-- デプロイ用ZIPファイルの作成 -->
+    <target name="makeZip" description="デプロイ用ZIPファイルの作成">
+        <echo message="成果物をZIPファイルに梱包します。" />
+        <zip destfile="${base}/${dir.target}/${zipname}.zip"
+            basedir="${dir.target}"
+            excludes="${dir.target.classes}/*"
+        />
+    </target>
+
+    <!-- ビルド成果物削除 -->
+    <target name="clean" description="ビルド成果物削除">
+        <delete dir="${dir.target}" />
+    </target>
+</project>
