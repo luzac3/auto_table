@@ -8,14 +8,14 @@
      Luza
      ====================================================================== -->
 <project name="createTable" default="clean" basedir=".">
-    <description>
-            description
-    </description>
     <!-- ベースディレクトリ -->
     <dirname property="base" file="${ant.file}"/>
 
     <!-- jarファイル名 -->
     <property name = "jarname" value="autoTable" />
+
+    <!-- mainクラス名 -->
+    <property name="main" value="wolfnetTwei.autoTable.AutoTable"/>
 
     <!-- ZIPファイル名 -->
     <property name="zipname" value="autoTable" />
@@ -27,6 +27,12 @@
     <property name="dir.target.dependency" value="${dir.target}/dependency" />
     <property name="dir.target.file" value="${dir.target}/file" />
     <property name="dir.target.log" value="${dir.target}/log" />
+
+    <!-- javadocの置き場 -->
+    <property name="javadoc.dir" value="${dir.target}/docs" />
+
+    <!-- jarファイル配置先でライブラリを置くパス -->
+    <property name="dst.lib.dir" value="./lib" />
 
     <!-- srcディレクトリ -->
     <property name="dir.src" value="src" />
@@ -46,63 +52,29 @@
     <!-- ソースファイルエンコード -->
     <property name="src.enc" value="UTF-8" />
 
-    <!--
-        クラスパスの設定。
-        必要ライブラリの配置してあるパスをクラスパスに通す。
-    -->
-    <path id="build.lib">
-        <fileset dir="${dir.lib}" >
-            <include name="*" />
-        </fileset>
-    </path>
-
-<pathconvert pathsep=" " dirsep="/" property="jar.runtime.classpath">
-  <path>
-    <pathelement location="${build.dir}" />
-  </path>
-  <map from="${build.dir}" to="."/>
-</pathconvert>
-<!--
-<target name="jarpath" if="have.library">
--->
-<target name="jarpath">
-  <path id="jar.path">
-    <pathelement location="${build.dir}" />
-    <fileset dir="${dir.lib}">
-      <include name="*.jar" />
-    </fileset>
-  </path>
-  <!-- lib.dirは相対パスで指定しているので、これを絶対パスに変換 -->
-  <!-- これは、あとでmapを使ってjar.pathから絶対パスを削るため -->
-
-  <pathconvert property="lib.path">
-    <path path="${dir.lib}" />
-  </pathconvert>
-
-  <echo message="-------------------------- ${dir.lib}" />
-  <pathconvert pathsep=" " dirsep="/" property="jar.runtime.classpath" refid="jar.path">
-    <map from="${lib.path}"  to="."/>
-    <map from="${build.dir}" to="."/>
-  </pathconvert>
-  <echo message="-------------------------- ${jar.runtime.classpath}" />
-</target>
-
-    <!-- =================================
-          target: clean
-         ================================= -->
     <!-- JARファイル作成 -->
-    <target name="makeJar" description="JARファイル作成">
+    <target name="make" description="JARファイル作成">
         <!-- 作業用ディレクトリのcleanup -->
         <antcall target="clean"/>
-        <antcall target="jarpath"/>
-        <antcall target="compile"/>
-        <echo message="JARファイル作成" />
+        <antcall target="javadoc"/>
+    </target>
 
-        <jar basedir="${dir.target.classes}" destfile="${base}/${dir.target}/${jarname}.jar">
+    <target name = "jar" depends="compile">
+        <!-- クラスパス設定 -->
+        <path id = "libraries">
+            <fileset dir = "{dir.lib}" includes="*.jar" />
+        </path>
+        <pathconvert property="classpath" refid="libraries" targetos="unix" pathsep = " ">
+            <map from = "${basedir}\${dir.lib}\" to="${dst.lib.dir}" />
+            <map from = "\" to="/"/>
+        </pathconvert>
+
+        <jar jarfile = "${jar.filepath}" basedir="${dir.target.classes}">
+            <echo message="JARファイル作成" />
 
             <manifest>
-                <attribute name="Main-Class" value="wolfnetTwei.autoTable.AutoTable"/>
-                <attribute name="Class-Path" value="${jar.runtime.classpath}" />
+                <attribute name="Main-Class" value="${main}"/>
+                <attribute name="Class-Path" value="${classpath}" />
             </manifest>
         </jar>
         <antcall target="filecopy">
@@ -153,6 +125,11 @@
             target="1.8"
             includeAntRuntime="false"
             debug="true"/>
+    </target>
+
+    <!-- javadoc生成 -->
+    <target name="javadoc">
+        <javadoc sourcepath = "${dir.src}" extdirs="${dir.lib}" destdir="${javadoc.dir}" encoding="UTF-8" additionalparam="J-Dfile.encoding=UTF-8"/>
     </target>
 
     <!-- デプロイ用ZIPファイルの作成 -->

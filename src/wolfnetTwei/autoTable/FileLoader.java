@@ -1,5 +1,7 @@
 /**
  *
+ * FileName : FileLoader.java
+ *
  * ファイルリストからファイルの内容を取得するクラス<br>
  *
  * <package name="wolfnetTwei.autoTable" />
@@ -156,9 +158,6 @@ public class FileLoader {
         // 取得順のリスト
         List<Object> clmnLst = new ArrayList<>();
 
-        // カラム名をキーとした、プロパティごとのマップ
-        // Map <String,Object> clmnMap = new HashMap<>();
-
         for (String row : lineLst){
             clmnProperty = new ClmnProperty();
             String[] itemArr = row.split(",",-1);
@@ -167,15 +166,14 @@ public class FileLoader {
             clmnProperty.setClmnName(itemArr[1]);
             clmnProperty.setType(itemArr[2]);
             try {
-                // 数字に変換できたらその数字を、できなければ11を設定
+                // 数字に変換できない場合はLengthなしのため
                 clmnProperty.setLength(Integer.parseInt(itemArr[3]));
-            } catch (NumberFormatException e) {
-                clmnProperty.setLength(0);
+            } catch (NumberFormatException ignored) {
+                // 数字に変換できないLengthの場合、後続処理で無視されるため処理をスキップする
             }
             clmnProperty.setPrimaryFlg(flgChange(itemArr[5]));
             clmnProperty.setUniqueFlg(flgChange(itemArr[7]));
             clmnProperty.setIndexFlg(flgChange(itemArr[12]));
-            // clmnProperty.setForignFlg(flgChange(itemArr[8]));
             clmnProperty.setNullFlg(flgChange(itemArr[6]));
             clmnProperty.setIncrementFlg(flgChange(itemArr[9]));
             clmnProperty.setDefaultVal(itemArr[10]);
@@ -193,7 +191,7 @@ public class FileLoader {
      * ファイルから取得したPKなどの「○(有)」をフラグに変換する<br>
      *
      *  @param item PKなどのプロパティ("○"か"")
-     *  @return flg 取得したプロパティが○ならtrue,なしならfalse
+     *  @return flg 取得したプロパティが○ならtrue,そうでないならfalse
      *
      */
     private boolean flgChange(String item){
@@ -201,7 +199,10 @@ public class FileLoader {
         if(item.equals("○")){
             flg = true;
         }else if(item == ""){
-        	flg = false;
+            flg = false;
+        }else{
+            // ○または空文字以外が設定されている場合はエラーとして処理を停止
+            throw new RuntimeException("想定外の文字が設定されています");
         }
         return flg;
     }

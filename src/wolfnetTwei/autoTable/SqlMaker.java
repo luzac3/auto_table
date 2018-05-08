@@ -1,5 +1,7 @@
 /**
  *
+ * FileName : SqlMaker.java
+ *
  * SQL文(CreateTable文)を生成するクラス<br>
  *
  * <package name="wolfnetTwei.autoTable" />
@@ -22,9 +24,7 @@ import java.util.Map;
 
 /**
  *
- * 取得したマップを展開し、テーブル数分ループする<br>
- * テーブル名ごとのカラムリストからプロパティを取得し、<br>
- * SQL文として並べ替えてファイルに出力する<br>
+ * 取得したファイルリストの内容から、CreateTable文を作成する<br>
  *
  * @since  2018/05/04
  * @author takuto.osugi
@@ -34,7 +34,7 @@ public class SqlMaker {
 
     /**
      *
-     * 取得したマップを展開し、テーブル数分ループする<br>
+     * 取得したマップを展開し、テーブル数だけループする<br>
      * テーブル名ごとのカラムリストからプロパティを取得し、<br>
      * SQL文として並べ替えてファイルに出力する<br>
      *
@@ -46,8 +46,7 @@ public class SqlMaker {
         FileWriter fw = null;
         PrintWriter pw = null;
         try {
-            String path = ""
-            		+ "src\\wolfnetTwei\\autoTable\\updater.sql";
+            String path = "createTable.sql";
             // 常に上書き処理
             fw = new FileWriter(path, false);
 
@@ -55,7 +54,6 @@ public class SqlMaker {
 
             StringBuilder key = null;
             StringBuilder unique = null;
-            // StringBuilder foreign = null;
             StringBuilder index = null;
 
             String tblName = "";
@@ -69,7 +67,7 @@ public class SqlMaker {
                 tblName = clmnMap.getKey();
                 clmnLstInner = clmnMap.getValue();
 
-                // 同一名テーブルの削除文
+                // 同一名テーブルのDROP文
                 pw.print("DROP TABLE IF EXISTS ");
                 pw.println(tblName);
                 pw.println(";");
@@ -80,7 +78,6 @@ public class SqlMaker {
 
                 key.append("(");
                 unique.append("(");
-                // foreign.append("(");
                 index.append("(");
 
                 for (Object flg: clmnLstInner){
@@ -88,7 +85,6 @@ public class SqlMaker {
 
                     clmnName = clmnProperty.getClmnName();
 
-                    // else if とcontinueどっちがいいですかね？
                     if(clmnProperty.getPrimaryFlg()){
                         key.append(clmnName);
                         key.append(",");

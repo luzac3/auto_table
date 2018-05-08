@@ -1,5 +1,7 @@
 /**
  *
+ * FileName : AutoTable.java
+ *
  * CreateTable文自動生成メインクラス<br>
  *
  * <package name="wolfnetTwei.autoTable" />
@@ -40,7 +42,7 @@ class AutoTable{
     public static void main(String args[]){
         DOMConfigurator.configure("./log4j.xml");
 
-        final String FILE_LST_PATH = "..\\file";
+        final String FILE_LST_PATH = "file";
         String filePath = "";
 
         Map<String, List<Object>> tblMap = new HashMap<>();
@@ -96,7 +98,11 @@ class AutoTable{
 
         log.info("ファイル書き込み開始");
         // 作成したマップを受け取り、ファイル生成する関数の呼び出し
-        sqlMaker.makeStr(tblMap);
+        try{
+            sqlMaker.makeStr(tblMap);
+        }catch (Exception e){
+            log.error(e);
+        }
         log.info("ファイル書き込み完了");
     }
 }

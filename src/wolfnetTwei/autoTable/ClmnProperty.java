@@ -1,5 +1,7 @@
 /**
  *
+ * FileName : ClmnProperty.java
+ *
  * カラムごとのプロパティを保持するクラス<br>
  *
  * <package name="wolfnetTwei.autoTable" />
@@ -27,7 +29,6 @@ public class ClmnProperty {
     private String type;
 
     private int length;
-    // private String 少数;
 
     private boolean primaryFlg;
     private boolean uniqueFlg;
