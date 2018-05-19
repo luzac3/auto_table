@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!-- ======================================================================
      2018/05/07 20:26:25
 
@@ -7,142 +7,68 @@
 
      Luza
      ====================================================================== -->
-<project name="createTable" default="clean" basedir=".">
-    <!-- ベースディレクトリ -->
-    <dirname property="base" file="${ant.file}"/>
+<project name="build" default="build"  basedir=".">
+    <!-- 生成するjarファイル名（拡張子を含まない） -->
+    <property name="jar.name" value="autoTable"/>
 
-    <!-- jarファイル名 -->
-    <property name = "jarname" value="autoTable" />
-
-    <!-- mainクラス名 -->
+    <!-- 実行するメインクラス名（パッケージ名を含む） -->
     <property name="main" value="wolfnetTwei.autoTable.AutoTable"/>
 
-    <!-- ZIPファイル名 -->
-    <property name="zipname" value="autoTable" />
-
-    <!-- ビルド成果物ディレクトリ -->
-    <property name="dir.target" value="target" />
-    <property name="dir.target.classes" value="${dir.target}/classes" />
-    <property name="dir.target.resource" value="${dir.target}/resource" />
-    <property name="dir.target.dependency" value="${dir.target}/dependency" />
-    <property name="dir.target.file" value="${dir.target}/file" />
-    <property name="dir.target.log" value="${dir.target}/log" />
-
-    <!-- javadocの置き場 -->
-    <property name="javadoc.dir" value="${dir.target}/docs" />
-
-    <!-- jarファイル配置先でライブラリを置くパス -->
-    <property name="dst.lib.dir" value="./lib" />
-
-    <!-- srcディレクトリ -->
-    <property name="dir.src" value="src" />
-
-    <!-- リソースファイルディレクトリ -->
-    <property name="dir.resource" value="resource" />
-
-    <!-- libディレクトリ -->
-    <property name="dir.lib" value="lib" />
-
-    <!-- CSV等のファイル置き場 -->
-    <property name="dir.file" value="file" />
-
-    <!-- logファイル置き場 -->
-    <property name="dir.log" value="log" />
-
-    <!-- ソースファイルエンコード -->
-    <property name="src.enc" value="UTF-8" />
-
-    <!-- JARファイル作成 -->
-    <target name="make" description="JARファイル作成">
-        <!-- 作業用ディレクトリのcleanup -->
-        <antcall target="clean"/>
-        <antcall target="javadoc"/>
+    <!-- 生成されたjarファイルの配置先 -->
+    <target name="deploy" depends="jar">
+        <copy file="${jar.filepath}" todir="jar"/>
     </target>
 
-    <target name = "jar" depends="compile">
-        <!-- クラスパス設定 -->
-        <path id = "libraries">
-            <fileset dir = "{dir.lib}" includes="*.jar" />
+    <!-- jarファイルの配置先でライブラリを置くパス -->
+    <property name="dst.lib.dir" value="./lib/"/>
+
+    <!-- ソースファイルを置くディレクトリ -->
+    <property name="src.dir" value="src"/>
+
+    <!-- 外部ライブラリを置くディレクトリ -->
+    <property name="lib.dir" value="lib"/>
+
+    <!-- クラスファイルを置くディレクトリ -->
+    <property name="classes.dir" value="bin"/>
+
+    <!-- javadocを出力するディレクトリ -->
+    <property name="javadoc.dir" value="jar/docs"/>
+
+    <!-- 生成されたjarファイルを置くパス -->
+    <property name="jar.filepath" value="${lib.dir}/${jar.name}.jar"/>
+
+    <!-- デフォルトターゲット -->
+    <target name="build">
+        <antcall target="javadoc"/>
+        <antcall target="deploy"/>
+        <delete file="${jar.filepath}"/>
+    </target>
+    <!-- jarファイルの生成 -->
+    <target name="jar" depends="compile">
+        <!-- ライブラリパスを生成 -->
+        <path id="libraries">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
         </path>
-        <pathconvert property="classpath" refid="libraries" targetos="unix" pathsep = " ">
-            <map from = "${basedir}\${dir.lib}\" to="${dst.lib.dir}" />
-            <map from = "\" to="/"/>
+        <pathconvert property="classpath" refid="libraries" targetos="unix" pathsep=" ">
+            <map from="${basedir}\${lib.dir}\" to="${dst.lib.dir}"/>
+            <map from="\" to="/"/>
         </pathconvert>
-
-        <jar jarfile = "${jar.filepath}" basedir="${dir.target.classes}">
-            <echo message="JARファイル作成" />
-
+        <jar jarfile="${jar.filepath}" basedir="${classes.dir}">
             <manifest>
                 <attribute name="Main-Class" value="${main}"/>
-                <attribute name="Class-Path" value="${classpath}" />
+                <attribute name="Class-Path" value="${classpath}"/>
             </manifest>
         </jar>
-        <antcall target="filecopy">
-            <param name="dir.env" value="${dir.resource}" />
-        </antcall>
     </target>
-
-    <!-- クラスファイル以外の必要なファイルのコピー -->
-    <target name="filecopy" description="クラスファイル以外の必要なファイルのコピー">
-        <echo message="クラスファイル以外の必要なファイルをコピー" />
-
-        <!-- 古いファイルを削除 -->
-        <delete file="${dir.target.resource}/*" />
-        <delete file="${dir.target.dependency}/*" />
-        <delete file="${dir.target.file}/*" />
-        <delete file="${dir.target.log}/*" />
-
-        <!-- 新しいフォルダを作成 -->
-        <mkdir dir="${dir.target.resource}" />
-        <mkdir dir="${dir.target.dependency}" />
-        <mkdir dir="${dir.target.file}" />
-        <mkdir dir="${dir.target.log}" />
-
-        <!-- resourceファイルをコピー -->
-        <copy todir="${dir.target.resource}">
-            <fileset dir="${dir.env}">
-                <include name="*" />
-            </fileset>
-        </copy>
-
-        <!-- 依存性のあるファイルをコピー -->
-        <copy todir="${dir.target.dependency}">
-            <fileset dir="${dir.lib}">
-                <include name="*" />
-            </fileset>
-        </copy>
-    </target>
-
     <!-- コンパイル -->
-    <target name="compile" description="コンパイル">
-        <echo message="コンパイル開始" />
-        <mkdir dir="${dir.target.classes}"/>
-        <javac classpathref="build.lib"
-            srcdir="${dir.src}"
-            destdir="${dir.target.classes}"
-            encoding="${src.enc}"
-            source="1.8"
-            target="1.8"
-            includeAntRuntime="false"
-            debug="true"/>
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}"
+            includeantruntime="false"/>
     </target>
-
-    <!-- javadoc生成 -->
+    <!-- Javadocの生成-->
     <target name="javadoc">
-        <javadoc sourcepath = "${dir.src}" extdirs="${dir.lib}" destdir="${javadoc.dir}" encoding="UTF-8" additionalparam="J-Dfile.encoding=UTF-8"/>
-    </target>
-
-    <!-- デプロイ用ZIPファイルの作成 -->
-    <target name="makeZip" description="デプロイ用ZIPファイルの作成">
-        <echo message="成果物をZIPファイルに梱包します。" />
-        <zip destfile="${base}/${dir.target}/${zipname}.zip"
-            basedir="${dir.target}"
-            excludes="${dir.target.classes}/*"
-        />
-    </target>
-
-    <!-- ビルド成果物削除 -->
-    <target name="clean" description="ビルド成果物削除">
-        <delete dir="${dir.target}" />
+        <javadoc sourcepath="${src.dir}" extdirs="${lib.dir}" destdir="${javadoc.dir}"
+                 encoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8"/>
     </target>
 </project>
