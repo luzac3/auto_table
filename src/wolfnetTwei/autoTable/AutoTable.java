@@ -27,7 +27,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  *
- * 引数で取得したディレクトリのCSVかXLSファイル一覧を取得<br>
+ * 指定ディレクトリのCSVかXLSファイル一覧を取得<br>
  * ファイル(テーブル)ごとにリストを作成する関数を呼び出す<br>
  * 取得したマップをファイルSQLファイルを生成する関数に渡す<br>
  *

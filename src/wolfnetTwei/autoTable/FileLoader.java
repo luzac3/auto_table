@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -108,12 +109,24 @@ public class FileLoader {
                     while(cells.hasNext()){
                         // cellオブジェクトを取得
                         Cell cell = cells.next();
+                        CellType cellType = cell.getCellTypeEnum();
                         try{
-                            switch(cell.getCellType()) {
-                              case Cell.CELL_TYPE_STRING:
+                            switch(cellType) {
+                              case BLANK:
+                                break;
+                              case ERROR:
+                                throw new RuntimeException("数式にエラーが存在します");
+                              case FORMULA:
+                                  throw new RuntimeException("対応していない形式です");
+                              case _NONE:
+                                  throw new RuntimeException("型が不明です");
+                              case BOOLEAN:
+                                cellVal.append(cell.getBooleanCellValue());
+                                  break;
+                              case STRING:
                                 cellVal.append(cell.getStringCellValue().trim());
                                 break;
-                              case Cell.CELL_TYPE_NUMERIC:
+                              case NUMERIC:
                                 if(DateUtil.isCellDateFormatted(cell)) {
                                     cellVal.append(cell.getDateCellValue());
                                 } else {
