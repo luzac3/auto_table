@@ -42,6 +42,7 @@ class AutoTable{
     public static void main(String args[]){
         DOMConfigurator.configure("./log4j.xml");
 
+        // final String FILE_LST_PATH = "./file";
         final String FILE_LST_PATH = "file";
         String filePath = "";
 

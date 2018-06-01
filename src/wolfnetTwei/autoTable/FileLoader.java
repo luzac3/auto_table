@@ -57,7 +57,6 @@ public class FileLoader {
      *  @Exception
      *
      */
-    @SuppressWarnings("deprecation")
 	Map<String,List<Object>> fileLoad(String filePath, Map<String,List<Object>> tblMap) throws Exception{
         // 宣言してNULLを設定
         ClmnProperty clmnProperty = null;
@@ -211,7 +210,7 @@ public class FileLoader {
         boolean flg = false;
         if(item.equals("○")){
             flg = true;
-        }else if(item == ""){
+        }else if(item.isEmpty()){
             flg = false;
         }else{
             // ○または空文字以外が設定されている場合はエラーとして処理を停止
